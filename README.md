@@ -34,17 +34,17 @@ This is an AI-based application designed for shooting analysis using object dete
    ```bash
    pip install -r requirements.txt
 3. **Set up the MySQL database**:
-  - Create a database named sa_firing.
-  - Update the DATABASE_CONFIG in the app.py file with your MySQL credentials.
+   - Create a database named sa_firing.
+   - Update the DATABASE_CONFIG in the app.py file with your MySQL credentials.
 4. **Run the application**:
-  - Navigate to the directory `extra`
-  - Open terminal and type:
+   - Navigate to the directory `extra`
+   - Open terminal and type:
 
 
-     ```bash
-     python app.py
-     ```
-     By default, the application will run on `http://127.0.0.1:5000/`.
+      ```bash
+      python app.py
+      ```
+      By default, the application will run on `http://127.0.0.1:5000/`.
 
 ## Usage
 
