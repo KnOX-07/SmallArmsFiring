@@ -1,0 +1,334 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+    background-image: url("/static/background.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    /* overflow: hidden; */
+}
+
+input::placeholder {
+    font-weight: bold;
+    color: black;
+    font-size: 12px;
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #333;
+    color: white;
+    /* Swap the order of elements so logos are on the right */
+    flex-direction: row-reverse;
+}
+
+.logos {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+}
+
+/* Logos */
+.logos img {
+    max-height: 50px;
+    /* Set appropriate height */
+    max-width: 250px;
+    /* Set appropriate width */
+    margin-right: 20px;
+    object-fit: contain;
+    /* Ensures aspect ratio is maintained */
+    display: block;
+    /* Makes sure images are displayed */
+    border-radius: 7px;
+}
+
+.logos img:nth-child(3) {
+    max-width: 250px;
+    /* Adjust width as needed */
+    height: auto;
+    /* Maintain aspect ratio */
+    border-radius: 7px;
+}
+
+/* Navbar */
+.navbar {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: rgba(68, 68, 68, 0.5);
+}
+
+.project-name {
+    font-size: 24px;
+    /* Increase the size */
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    left: 20px;
+    /* Aligns it to the top left corner */
+    color: white;
+}
+
+.nav-menu {
+    display: flex;
+    justify-content: flex-end;
+    /* Align buttons to the right */
+    gap: 7px;
+    /* Adds spacing between buttons */
+    margin-left: auto;
+    /* Pushes buttons to the right */
+}
+
+.nav-menu button {
+    margin-left: 15px;
+    padding: 10px 20px;
+    background-color: #555;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.nav-menu button:hover {
+    background-color: #666;
+}
+
+/* Dashboard container */
+.dashboard-container {
+    padding: 20px;
+}
+
+/* Content sections */
+.content-section {
+    display: none;
+}
+
+.content-section.active {
+    display: block;
+}
+
+/* Popup styles */
+.popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    width: 300px;
+    border-radius: 5px;
+}
+
+.popup-header {
+    font-weight: bold;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.close-icon {
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.input-item {
+    flex: 1;
+    margin-right: 15px;
+}
+
+.input-item label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.input-item input[type="text"],
+input[type="date"] {
+    width: 80%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+input-item:last-child {
+    margin-right: 0;
+}
+
+button {
+    background-color: #444;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #555;
+}
+
+/* Overlay */
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 500;
+}
+
+/* File upload styles */
+.file-container {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.file-input {
+    display: none;
+}
+
+.file-display {
+    flex-grow: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background-color: #f9f9f9;
+}
+
+.file-label {
+    padding: 10px 20px;
+    background-color: #555;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-left: 10px;
+    border-radius: 3px;
+}
+
+.file-label:hover {
+    background-color: #666;
+}
+
+.submit-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #444;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.submit-button:hover {
+    background-color: #555;
+}
+
+/* close-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 30px;
+    cursor: pointer;
+    color: rgb(56, 56, 124);
+} */
+
+#camera-container {
+    position: fixed;
+    top: 40%;
+    /* Move it a bit up from the center */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: none;
+    padding: 0;
+    box-shadow: none;
+    z-index: 1000;
+    width: auto;
+    /* Ensure the width adjusts based on content */
+    height: auto;
+    /* Ensure the height adjusts based on content */
+    border-radius: 0;
+}
+
+#camera-container3 {
+    position: fixed;
+    top: 40%;
+    /* Move it a bit up from the center */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: none;
+    padding: 0;
+    box-shadow: none;
+    z-index: 1000;
+    width: auto;
+    /* Ensure the width adjusts based on content */
+    height: auto;
+    /* Ensure the height adjusts based on content */
+    border-radius: 0;
+}
+
+#camera-container-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 30%;
+    /* Lower the popup slightly */
+    left: 50%;
+    transform: translate(-50%, -30%);
+    z-index: 1000;
+    width: 90%;
+    /* Increase the width */
+}
+
+#camera-container,
+#camera-container2 {
+    flex: 0 0 45%;
+    /* Set the size for each camera */
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#camera-container5,
+#camera-container6 {
+    flex: 0 1 auto;
+    /* Prevent containers from stretching */
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Additional styling if needed */
+}
+
+video {
+    width: 100%;
+    height: auto;
+}
+
+.popup-header {
+    width: 100%;
+    text-align: right;
+}

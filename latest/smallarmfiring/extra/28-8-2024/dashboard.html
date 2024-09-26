@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    
+    <style>
+
+
+        
+
+       
+    .dashboard-button {
+        padding: 15px 30px; /* Increase padding to make the button larger */
+        font-size: 18px; /* Increase font size */
+        width: 200px; /* Set a wider width */
+        height: 60px; /* Set a taller height */
+        background-color: blue; /* Example background color */
+        color: white; /* Text color */
+        border: none; /* Remove border */
+        border-radius: 10px; /* Optional: add rounded corners */
+        cursor: pointer; /* Pointer cursor on hover */
+        transition: background-color 0.3s; /* Smooth transition for background color */
+    }
+
+    .dashboard-button:hover {
+        background-color: #004080;
+    }
+        .content-section {
+            display: none;
+        }
+        .active {
+            display: block;
+        }
+        .button-container {
+            display: flex;
+            flex-direction: column; /* Stack buttons vertically */
+            gap: 10px; /* Space between buttons */
+        }
+        /* Style for the popups */
+        .popup {
+            display: None;
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: white;
+            border: 1px solid #ccc;
+            z-index: 1000;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            max-width: 90%;
+        }
+        
+        .popup .popup-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        .popup .close-icon {
+            position: absolute;
+            top: 0;
+            right: 0;
+            font-size: 20px;
+            cursor: pointer;
+        }
+      
+        
+        .popup input[type="text"] {
+            width: 100%;
+            padding: 5px;
+            margin-bottom: 10px;
+        }
+        .popup button {
+            padding: 5px 10px;
+            margin-top: 10px;
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+          input[type="text"] {
+            border-radius: 10px; 
+            padding: 10px;       
+            border: 1px solid #ccc; 
+        }
+        
+    .popup input[type="text"],
+    .popup input[type="date"] {
+        width: 100%; /* Keep input fields full width */
+        padding: 5px;
+        margin-bottom: 10px;
+        border-radius: 10px;
+        border: 1px solid #ccc;
+    }
+
+    .popup label {
+        display: block; /* Make labels block elements */
+        margin-bottom: 5px; /* Add some space below labels */
+    }
+
+    .popup .input-group {
+        margin-bottom: 10px; /* Space between input groups */
+    }
+
+    .popup button {
+        padding: 10px 20px;
+        background-color: rgb(0,47,255);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        width: 50%; /* Make the button full width */
+    }
+    close-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 30px; /* Make the close button bigger */
+    cursor: pointer;
+    color: blue;
+   }
+
+   #camera-container .close-icon {
+    right: 15px; /* Move it slightly further to the right */
+    top: 15px; /* Move it slightly down */
+    font-size: 35px; /* Increase the size of the cross icon */
+    color: blue;
+   }
+    </style>
+</head>
+<body>
+
+  
+    <div class="dashboard-container">
+        <h1>Dashboard</h1>
+        <button class="dashboard-button" onclick="showPopup1()">Settings</button><br>
+        <button class="dashboard-button" onclick="showPopup2()">Capture Photo</button><br>
+        <button class="dashboard-button" onclick="showPopup2()">Capture Video</button><br>
+        <button class="dashboard-button" onclick="showPopup3()">Measure Performance</button><br>
+	<button class="dashboard-button" onclick="showPopup()">Browse</button>
+      <!--  <div id="settings" class="content-section">
+            <!-- <h2>Settings</h2> -->
+            <!-- Settings content goes here -->
+        </div>
+
+        <div id="capture-photo" class="content-section">
+            <h2>Capture Photo</h2>
+            <!-- Capture photo content goes here -->
+        </div>
+
+        <div id="capture-video" class="content-section">
+            <h2>Capture Video</h2>
+            <!-- Capture video content goes here -->
+        </div>
+
+       <div id="measure-performance" class="content-section">
+            <h2>Measure Performance</h2>
+            <!-- Measure performance content goes here -->
+        </div>
+        
+        <div id="upload" class="content-section">
+            <!-- <h2>Browse</h2> -->
+        </div>
+    </div>
+
+    <!-- Popup 1 for Radius and Score -->
+    
+    <div id="popup1" class="popup">
+    <div class="popup-header">
+        Change Settings
+        <span class="close-icon" onclick="closePopups()">×</span>
+    </div>
+    <form id="scoreForm" action="/modify-scores" method="post">
+    <div class="input-group">
+        <div class="input-item">
+            <label for="radius">Radius:</label>
+            <input type="text" id="radius" placeholder="Less than 32" readonly>
+        </div>
+        <div class="input-item">
+            <label for="score">Score:</label>
+            <input type="text" id="score" name="score">
+        </div>
+    </div>
+    <div class="input-group">
+        <div class="input-item">
+            <label for="radius2">Radius:</label>
+            <input type="text" id="radius2" placeholder="Between 32 and 48" readonly>
+        </div>
+        <div class="input-item">
+            <label for="score2">Score:</label>
+            <input type="text" id="score2" name="score2">
+        </div>
+    </div>
+    <div class="input-group">
+        <div class="input-item">
+            <label for="radius3">Radius:</label>
+            <input type="text" id="radius3" placeholder="More than 48" readonly>
+        </div>
+        <div class="input-item">
+            <label for="score3">Score:</label>
+            <input type="text" id="score3" name="score3">
+        </div>
+    </div> 
+        
+    <button onclick="saveSettings()">Save</button>
+    </div>
+    
+    <div id="popup2" class="popup">
+    <div class="popup-header">
+        Set Bullet Settings
+        <span class="close-icon" onclick="closePopups()">×</span>
+    </div>
+    <label for="butt_no">Butt no:</label>
+    <input type="text" id="noOfBullet">
+    <label for="sid_input">Army ID:</label>
+    <input type="text" id="sid_input" name="sid_input" class="sid_input" required onblur="generateID()">
+    <label for="name_input">Name:</label>
+    <input type="text" id="name_input" name="name_input" class="name_input" required>
+    <label for="range">Rank:</label>
+    <input type="text" id="range">
+    <button onclick="proceedToPopup4()">Proceed</button>
+</div>
+
+<!-- Camera Video Stream -->
+<div id="camera-container" style="display: none;">
+<div class="popup-header">
+        <span class="close-icon" onclick="closeCamera()" >×</span>
+    </div>
+    <video id="camera-stream" autoplay playsinline></video>
+    <button onclick="capturePhoto()">Take Photo</button>
+</div>
+
+	<div id="popup4" class="popup">
+	    <div class="popup-header">
+		Set Rounds and Distance
+		<span class="close-icon" onclick="closePopups()">×</span>
+	    </div>
+	    <label for="rounds">Rounds:</label>
+	    <input type="text" id="rounds" style="font-size: 15px; padding: 9px;">
+	    <label for="distance">Distance:</label>
+	     <option value="25m">25m</option>
+             <option value="50m">50m</option>
+             <option value="100m">100m</option>
+             <option value="200m">200m</option>
+              <option value="400m">400m</option>
+	    
+	    <button onclick="startCamera()">Proceed</button>
+	</div>
+
+    
+<script>
+function proceedToPopup4() {
+            document.getElementById('popup2').style.display = 'none'; // Hide Popup 2
+            document.getElementById('popup4').style.display = 'block'; // Show Popup 4
+}
+
+  let cameraStream;
+
+function startCamera() {
+    document.getElementById('popup4').style.display = 'none'; // Hide popup
+    document.getElementById('camera-container').style.display = 'block'; // Show camera
+
+    // Access user's camera
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(function(stream) {
+            cameraStream = stream;
+            document.getElementById('camera-stream').srcObject = stream;
+        })
+        .catch(function(err) {
+            console.log("Error: " + err);
+            alert("Unable to access camera.");
+        });
+        
+}
+
+  
+
+
+
+function capturePhoto() {
+    const video = document.getElementById('camera-stream');
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+     const imageDataUrl = canvas.toDataURL('image/jpeg');
+
+    // Create a link element to download the image
+    const downloadLink = document.createElement('a');
+    downloadLink.href = imageDataUrl;
+    downloadLink.download = 'photo.jpg';  // Set the file name
+
+    // Trigger the download by programmatically clicking the link
+    downloadLink.click();
+
+    // Convert the image to a Blob and send it to the backend
+    canvas.toBlob(function(blob) {
+        const formData = new FormData();
+        formData.append('photo', blob, 'photo.jpg');
+
+        // Send the photo to the backend using fetch
+        fetch('/save-photo', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("Photo saved successfully!");
+            } else {
+                alert("Failed to save photo.");
+            }
+            closeCamera();
+        })
+        .catch(err => console.log(err));
+    });
+}
+
+function closeCamera() {
+    document.getElementById('camera-container').style.display = 'none';
+    if (cameraStream) {
+        const tracks = cameraStream.getTracks();
+        tracks.forEach(track => track.stop());
+    }
+}
+
+
+
+
+
+
+</script>
+
+    <!-- Popup 2 for No.of Bullet, ID, Range 
+    <div id="popup2" class="popup">
+    <div class="popup-header">
+        Set Bullet Settings
+        <span class="close-icon" onclick="closePopups()">×</span>
+    </div>
+    <label for="noOfBullet">No. of Bullet:</label>
+    <input type="text" id="noOfBullet">
+    <label for="id">ID:</label>
+    <input type="text" id="id">
+    <label for="range">Range:</label>
+    <input type="text" id="range">
+    <button onclick="saveSettings()">Start</button>-->
+  
+    
+    <!-- Overlay -->
+    <div id="overlay" class="overlay"></div>
+
+    <script>
+        function showPopup1() {
+            document.getElementById('popup1').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
+        }
+        </script>   
+         
+</div>
+   
+
+
+    <!-- Overlay -->
+    <div id="overlay" class="overlay"></div>
+
+    <script>
+        function showPopup1() {
+            document.getElementById('popup1').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
+        }
+
+        function showPopup2() {
+            document.getElementById('popup1').style.display = 'none';
+            document.getElementById('popup2').style.display = 'block';
+        }
+
+        function closePopups() {
+            document.getElementById('popup1').style.display = 'none';
+            document.getElementById('popup2').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+        }
+
+        function saveSettings() {
+            // Example of capturing the input values
+            const radius = document.getElementById('radius').value;
+            const score = document.getElementById('score').value;
+            const noOfBullet = document.getElementById('noOfBullet').value;
+            const id = document.getElementById('id').value;
+            const range = document.getElementById('range').value;
+
+            // Here you can save the data, e.g., sending to a backend or storing locally
+
+            // Close the popup and overlay
+            closePopups();
+
+            // Redirect to dashboard or refresh the page to show updated data
+            // alert('Settings Saved Successfully!');
+            showSection('settings');  // Assuming you want to go back to the settings section
+        }
+
+        function showSection(sectionId) {
+            // Hide all sections
+            var sections = document.querySelectorAll('.content-section');
+            sections.forEach(function(section) {
+                section.classList.remove('active');
+            });
+
+            // Show the selected section
+            var activeSection = document.getElementById(sectionId);
+            if (activeSection) {
+                activeSection.classList.add('active');
+            }
+        }
+        
+        function showPopup() {
+            document.getElementById('uploadPopup').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
+        }
+        
+        function closePopup() {
+            document.getElementById('uploadPopup').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+        }
+        
+        function generateID(){
+            var sid = document.getElementByID("sid_input").value;
+            document.getElementByID("sid_input").value = sid;
+        }
+        
+        function updateFileDisplay() {
+            var fileInput = document.getElementById("file_input");
+            var fileDisplay = document.getElementById("file_display");
+            fileDisplay.value = fileInput.files.length > 0 ? fileInput.files[0].name : "";
+        }
+    </script>
+ <!-- Popup 3 for Measure Performance -->
+<div id="popup3" class="popup">
+    <div class="popup-header">
+        Measure Performance
+        <span class="close-icon" onclick="closePopups()">×</span>
+    </div>
+    <label for="sid_input">ID:</label>
+    <input type="text" id="sid_input" name="sid_input" class="sid_input" required onblur="generateID()">
+    <label for="startDate">Start Date:</label>
+    <input type="date" id="startDate">
+    <label for="endDate">End Date:</label>
+    <input type="date" id="endDate">
+    <button onclick="savePerformance()">Submit</button>
+</div>
+ <!-- Overlay -->
+    <div id="overlay" class="overlay"></div>
+ <!-- Popup for File Upload -->
+        <div id="uploadPopup" class="popup">
+            <div class="popup-header">
+                File Upload
+                <span class="close-icon" onclick="closePopup()">×</span>
+            </div>
+            <form action="/" method="post" enctype="multipart/form-data">
+                <div class="file-container">
+                    <input type="text" id="file_display" class="file-display" readonly>
+                    <label for="file_input" class="file-label">Browse</label>
+                    <input type="file" id="file_input" name="file_input" class="file-input" onchange="updateFileDisplay()">
+                </div>
+                <input type="submit" value="Submit" class="submit-button">
+            </form>
+        </div>   
+
+<script>
+    function showPopup3() {
+    document.getElementById('popup3').style.display = 'block';
+    document.getElementById('overlay').style.display = 'block';
+}
+   function closePopups() {
+            document.querySelectorAll('.popup').forEach(function(popup) {
+                popup.style.display = 'none';
+            });
+            document.getElementById('overlay').style.display = 'none';
+        }
+
+        function savePerformance() {
+            const id = document.getElementById('performanceId').value;
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+
+
+    // Here you can save the data, e.g., sending to a backend or storing locally
+
+    // Close the popup and overlay
+    closePopups();
+
+    // Redirect to dashboard or refresh the page to show updated data
+    //alert('Performance Data Saved Successfully!');
+    //showSection('measure-performance');  // Assuming you want to go back to the measure performance section
+}
+function showSection(sectionId) {
+            // Hide all sections
+            var sections = document.querySelectorAll('.content-section');
+            sections.forEach(function(section) {
+                section.classList.remove('active');
+            });
+
+            // Show the selected section
+            var activeSection = document.getElementById(sectionId);
+            if (activeSection) {
+                activeSection.classList.add('active');
+            }
+        }
+
+</script>    
+</body>
+</html>

@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">   
+</head>
+
+<body>
+
+    <div class="header">
+        <div class="logos">
+            <img src="/static/logo1.jpg" alt="Logo 1">
+            <img src="/static/logo2.jpg" alt="Logo 2">
+            <img src="/static/logo3.jpg" alt="Logo 3">
+            <img src="/static/logo4.jpg" alt="Logo 4">
+        </div>
+    </div>
+
+    <div class="navbar">
+        <div class="project-name">PADINALE SMALL ARMS FIRING SCORE EVALUATOR</div>
+        <div class="nav-menu">
+            <button onclick="showPopup1()">Settings</button>
+             <button onclick="showPopup81()">Multiple Shooter</button>
+            
+            <button onclick="showPopup2()">Capture Photo</button>
+            <button onclick="showPopup77()">Capture Video</button>
+            <button onclick="showPopup3()">Measure Performance</button>
+            <button onclick="showPopup()">Browse Photo</button>
+            <button onclick="showPopup69()">Browse Video</button>
+        </div>
+    </div>
+
+    <div class="dashboard-container">
+        <!-- Content sections -->
+        <div id="settings" class="content-section"></div>
+        <div id="capture-photo" class="content-section"></div>
+        <div id="capture-video" class="content-section"></div>
+        <div id="measure-performance" class="content-section"></div>
+        <div id="upload" class="content-section"></div>
+    </div>
+
+    <!-- Popup 1 for Radius and Score -->
+    <form action="{{ url_for('process_score') }}" method="POST">
+        <div id="popup1" class="popup">
+        <div class="popup-header">
+            Change Settings
+            <span class="close-icon" onclick="closePopups()">×</span>
+        </div>
+        <div class="input-group">
+            <div class="input-item">
+                <label for="radius">Radius:</label>
+                <input type="text" id="radius" placeholder="Less than 32" readonly>
+            </div>
+            <div class="input-item">
+                <label for="score">Score:</label>
+                <input type="text" id="score" name="score">
+            </div>
+        </div>
+        <div class="input-group">
+            <div class="input-item">
+                <label for="radius2">Radius:</label>
+                <input type="text" id="radius2" placeholder="Between 32 and 48" readonly>
+            </div>
+            <div class="input-item">
+                <label for="score2">Score:</label>
+                <input type="text" id="score2" name="score2">
+            </div>
+        </div>
+        <div class="input-group">
+            <div class="input-item">
+                <label for="radius3">Radius:</label>
+                <input type="text" id="radius3" placeholder="More than 48" readonly>
+            </div>
+            <div class="input-item">
+                <label for="score3">Score:</label>
+                <input type="text" id="score3" name="score3">
+            </div>
+        </div> 
+            
+        <button onclick="submit">Save</button>
+        </div>
+    </form>
+    <!-- Popup 81 -->
+    <div id="popup81" class="popup">
+    <div class="popup-head">
+        <span class="close-icon" onclick="closePopups()" style="position: absolute; top: 7px; right: 10px; font-size: 20px; cursor: pointer;">×</span>
+        <label for="numShooters">Number of Shooters:</label>
+        <input type="number" id="numShooters" min="1" max="2" style="width: 200px; height: 25px;"><br></br>
+        <button onclick="proceedToPopup82()">Submit</button>
+    </div>
+    </div>       
+    <!-- Popup 82 -->
+    <div id="popup82" class="popup">
+    <div class="popup-header">
+        <span class="close-icon" onclick="closePopups()" style="position: absolute; top: 7px; right: 10px; font-size: 20px; cursor: pointer;">×</span>
+    </div>
+    <label for="armid1">ArmyID for Shooter1:</label>
+    <input type="text" id="armid1"><br></br>
+    <label for="armid2">ArmyID for Shooter2:</label>
+    <input type="text" id="armid2" required><br></br>
+    <button type="button" onclick="submitPopup82()">Submit</button>
+    </div>
+    <!-- Add camera container wrappers -->
+    <div id="camera-container-wrapper" style="display:none;">
+    <div id="camera-container5" style="display:none;">
+        <div class="popup-header">
+            
+        </div>
+        <img id="camera-stream1" src="" style="width: 550px; height: 380px;">
+        <center>
+            <button onclick="capturePhoto1()" style="padding: 5px 10px; font-size: 15px;">Take Photo</button>
+             <button onclick="closeCamera1()" style="padding: 5px 10px; font-size: 15px;">Close</button>
+        </center>
+    </div>
+    <div id="camera-container6" style="display:none;">
+        <div class="popup-header">
+            
+        </div>
+        <img id="camera-stream2" src="" style="width: 550px; height: 380px;">
+        <center>
+            <button onclick="capturePhoto2()" style="padding: 5px 10px; font-size: 15px;">Take Photo</button>
+             <button onclick="closeCamera2()" style="padding: 5px 10px; font-size: 15px;">Close</button>
+        </center>
+    </div>
+    </div>        
+    <div id="popup2" class="popup">
+        <div class="popup-header">
+            Set Bullet Settings
+            <span class="close-icon" onclick="closePopups()">×</span>
+        </div>
+        <form id="popupForm" method="POST">
+            <label for="butt_no">Butt no:</label>
+            <input type="text" id="noOfBullet" name="noOfBullet"><br></br>
+            <label for="sid_input">Army ID:</label>
+            <input type="text" id="sid_input" name="sid_input" class="sid_input" required onblur="generateID()"><br></br>
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name"><br></br>
+            <label for="range">Rank:</label>
+            <input type="text" id="range" name="range"><br></br>
+            <button type="button" onclick="submitFormData()">Proceed</button>
+        </form>
+    </div>
+    <div id="popup77" class="popup">
+        <div class="popup-header">
+            Set Bullet Settings
+            <span class="close-icon" onclick="closePopups()">×</span>
+        </div>
+        <label for="butt_no">Butt no:</label>
+        <input type="text" id="noOfBullet"><br></br>
+        <label for="sid_input">Army ID:</label>
+        <input type="text" id="sid_input" name="sid_input" class="sid_input" required onblur="generateID()"><br></br>
+        <label for="name">Name:</label>
+        <input type="text" id="name"><br></br>
+        <label for="range">Rank:</label>
+        <input type="text" id="range"><br></br>
+        <button onclick="proceedToPopup8()">Proceed</button>
+    </div>
+    
+    <div id="popup8" class="popup">
+        <div class="popup-header">
+            Set Rounds and Distance
+            <span class="close-icon" onclick="closePopups()">×</span>
+        </div>
+        <label for="rounds2">Rounds:</label>
+        <input type="text" id="rounds2" name="rounds2" style="font-size: 15px; padding: 5px;" required>
+        <label for="distance2">Distance:</label>
+        <select id="distance2" name= "distance2" style="font-size: 15px; padding: 9px; width: 100%;" required>
+            <option value="25m">25m</option>
+            <option value="50m">50m</option>
+            <option value="100m">100m</option>
+            <option value="200m">200m</option>
+            <option value="400m">400m</option>
+        </select><br></br>
+        <button type="button" onclick="beginCamera()">Proceed</button>    
+    </div>
+
+
+    <!-- Camera Video Stream -->
+    <div id="camera-container" style="display: none;">
+        <div class="popup-header">
+        </div>
+        <video id="camera-stream" autoplay playsinline></video><br>
+         
+        <center>
+        <button onclick="startCamera()" style="padding: 5px 10px; font-size: 15px; background-color: red; color: white;">Open Camera</button>
+        <button onclick="capturePhoto()" style="padding: 5px 10px; font-size: 15px;">Take Photo</button>
+        <button onclick="closeCamera()" style="padding: 5px 10px; font-size: 15px;">Close</button>
+        </center>
+    </div>
+    <div id="camera-container-wrapper" style="display: none;">
+        <div id="camera-container5" style="width: 600px; height: 400px; margin: 0 auto;">
+            <div class="popup-header">
+
+            </div>
+            <video id="camera-stream1" autoplay playsinline style="width: 100%; height: 100%; object-fit: cover;"></video>
+            <center>
+                <button onclick="capturePhoto1()" style="padding: 5px 10px; font-size: 15px;">Take Photo</button>
+                <button onclick="closeCamera1()" style="padding: 5px 10px; font-size: 15px;">Close</button>
+            </center>
+        </div>
+        <div id="camera-container6" style="width: 600px; height: 400px; margin: 0 auto;">
+            <div class="popup-header">
+                
+            </div>
+            <video id="camera-stream2" autoplay playsinline style="width: 100%; height: 100%; object-fit: cover;"></video>
+            <center>
+                <button onclick="capturePhoto2()" style="padding: 5px 10px; font-size: 15px;">Take Photo</button>
+                <button onclick="closeCamera2()" style="padding: 5px 10px; font-size: 15px;">Close</button>
+            </center>
+        </div>
+    </div>
+
+    <div id="camera-container3" style="display: none;">
+        <div class="popup-header">
+            <span class="close-icon" onclick="closeCamera()">×</span>
+        </div>
+        <video id="gum" autoplay playsinline></video><br>
+        <center>
+            
+        
+        <button id="start-record" onclick="startRecording()" style="padding: 5px 10px; font-size: 15px; background-color: red; color: white;">Start Recording</button>
+        <button id="stop-record" onclick="stopRecording()" style="padding: 5px 10px; font-size: 15px; display: none;">Stop Recording</button>
+        <button onclick="closeCamera3()" style="padding: 5px 10px; font-size: 15px;">Close</button>     
+        
+        </center>
+    </div>
+        
+        
+    </div>
+        <div id="popup4" class="popup">
+            <div class="popup-header">
+                Set Rounds and Distance
+                <span class="close-icon" onclick="closePopups()">×</span>
+            </div>
+            <label for="rounds">Rounds:</label>
+            <input type="text" id="rounds" name="rounds" style="font-size: 15px; padding: 5px;" required>
+            <label for="distance">Distance:</label>
+            <select id="distance" name= "distance" style="font-size: 15px; padding: 9px; width: 100%;" required>
+                <option value="25m">25m</option>
+                <option value="50m">50m</option>
+                <option value="100m">100m</option>
+                <option value="200m">200m</option>
+                <option value="400m">400m</option>
+            </select><br></br>
+            <button type="button" onclick="submitRoundDistance()">Proceed</button>
+        </div>
+
+    <!-- Camera Video Stream -->
+<!--<div id="camera-container2" style="display: none;">
+    <div class="popup-header">
+        <span class="close-icon" onclick="closeCamera()">×</span>
+    </div>
+    <video id="camera-stream" autoplay playsinline></video><br>
+    <center>
+        
+      <button id="start-record" onclick="startRecording()" style="padding: 5px 10px; font-size: 15px;">Start Recording</button>
+        <button id="stop-record" onclick="stopRecording()" style="padding: 5px 10px; font-size: 15px; display: none;">Stop Recording</button>
+    </center>
+</div>-->
+
+<script>
+    let cameraStream;
+    let mediaRecorder;
+    let recordedChunks = [];
+
+   function showPopup77() {
+            closePopups();
+            document.getElementById('popup77').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
+        }
+        function beginCamera() {
+            closePopups();
+            document.getElementById('camera-container3').style.display = 'block'; // Show camera
+             
+         // Access user's camera
+         navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function (stream) {
+                    cameraStream = stream;
+                    document.getElementById('gum').srcObject = stream;
+                })
+                .catch(function (err) {
+                    console.log("Error: " + err);
+                    alert("Unable to access camera.");
+                });
+            }
+
+        function startRecording() {
+            recordedChunks = [];
+            mediaRecorder = new MediaRecorder(cameraStream, { mimeType: 'video/webm' });
+
+            mediaRecorder.ondataavailable = function (event) {
+                if (event.data.size > 0) {
+                    recordedChunks.push(event.data);
+                }
+            };
+
+            mediaRecorder.onstop = function () {
+                const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                const url = URL.createObjectURL(blob);
+
+                // Create a link element to download the video
+                const downloadLink = document.createElement('a');
+                downloadLink.href = url;
+                downloadLink.download = 'recorded_video.webm'; // File name for the recorded video
+                downloadLink.click();
+
+                // Optional: Send the video to the server
+                const formData = new FormData();
+                formData.append('video', blob, 'recorded_video.webm');
+                fetch('/save-video', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Video saved successfully!");
+                    } else {
+                        alert("Failed to save video.");
+                    }
+                })
+                .catch(err => console.log(err));
+            };
+
+            mediaRecorder.start();
+            document.getElementById('start-record').style.display = 'none';
+            document.getElementById('stop-record').style.display = 'inline-block';
+        }
+
+        function stopRecording() {
+            mediaRecorder.stop();
+            document.getElementById('start-record').style.display = 'inline-block';
+            document.getElementById('stop-record').style.display = 'none';
+        }
+
+        
+        
+
+   function closeCamera3() {
+        document.getElementById('camera-container3').style.display = 'none';
+        if (cameraStream) {
+            const tracks = cameraStream.getTracks();
+            tracks.forEach(track => track.stop());
+        }
+    }
+</script>
+
+    <script>
+        function proceedToPopup4() {
+            document.getElementById('popup2').style.display = 'none'; // Hide Popup 2
+            document.getElementById('popup4').style.display = 'block'; // Show Popup 4
+        }
+        function proceedToPopup8() {
+            document.getElementById('popup77').style.display = 'none'; // Hide Popup 2
+            document.getElementById('popup8').style.display = 'block'; // Show Popup 4
+        }
+
+        function submitPopup81() {
+            var numShooters = parseInt(document.getElementById('numShooters').value, 10);
+        
+            fetch('/store-shooters', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ numShooters: numShooters })
+            })
+            .then(response => response.json().then(data => ({ status: response.status, body: data })))
+            .then(result => {
+                if (result.status === 200) {
+                    proceedToPopup82();
+                } else {
+                    console.error(`Error: ${result.body.error}`);
+                    alert(`Failed to submit number of shooters: ${result.body.error}`);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An unexpected error occurred while submitting number of shooters.');
+            });
+        }
+        
+        function submitPopup82() {
+            var armid1 = document.getElementById('armid1').value;
+            var armid2 = document.getElementById('armid2').value;
+            var numShooters = parseInt(document.getElementById('numShooters').value, 10);
+        
+            fetch('/store-shooters', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ numShooters: numShooters, armid1: armid1, armid2: numShooters === 1 ? null : armid2 })
+            })
+            .then(response => response.json().then(data => ({ status: response.status, body: data })))
+            .then(result => {
+                if (result.status === 200) {
+                    startCameras(); // Start the camera feeds if successful
+                } else {
+                    console.error(`Error: ${result.body.error}`);
+                    alert(`Failed to submit Army IDs: ${result.body.error}`);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An unexpected error occurred while submitting Army IDs.');
+            });
+        }                                               
+        
+        function proceedToPopup82() {
+            document.getElementById('popup81').style.display = 'none'; // Hide Popup 81
+            document.getElementById('popup82').style.display = 'block'; // Show Popup 82
+        }                
+
+        function submitFormData() {
+            const formData = new FormData();
+            formData.append('noOfBullet', document.getElementById('noOfBullet').value);
+            formData.append('sid_input', document.getElementById('sid_input').value);
+            formData.append('name', document.getElementById('name').value);
+            formData.append('range', document.getElementById('range').value);
+
+            fetch('/new-settings', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    //alert('Data saved successfully');
+                    document.getElementById('popup2').style.display = 'none';
+                    document.getElementById('popup4').style.display = 'block';
+                } else {
+                    return response.text().then(text => {
+                        alert('Failed to save data: ' + text);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while saving the data.');
+            });
+        }
+
+        function submitRoundDistance() {
+            const rounds = document.getElementById('rounds').value;
+            const distance = document.getElementById('distance').value;
+
+            const formData = new FormData();
+            formData.append('rounds', rounds);
+            formData.append('distance', distance);
+
+            fetch('/save-round-distance', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    //alert('Data saved successfully');
+                    document.getElementById('popup4').style.display = 'none';
+                    document.getElementById('camera-container').style.display = 'block';
+                } else {
+                    return response.text().then(text => {
+                        alert('Failed to save data: ' + text);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while saving the data.');
+            });
+        }
+        
+        function startCamera() {
+            document.getElementById('popup4').style.display = 'none'; // Hide popup
+            document.getElementById('camera-container').style.display = 'block'; // Show camera
+        
+            // Get available devices and select the Logitech webcam
+            navigator.mediaDevices.enumerateDevices()
+                .then(devices => {
+                    const videoDevices = devices.filter(device => device.kind === 'videoinput');
+                    let logitechCam = videoDevices.find(device => device.label.includes('Logitech'));
+                    
+                    // If a Logitech camera is found, use it
+                    const constraints = logitechCam ? { video: { deviceId: logitechCam.deviceId } } : { video: true };
+        
+                    return navigator.mediaDevices.getUserMedia(constraints);
+                })
+                .then(function (stream) {
+                    cameraStream = stream;
+                    document.getElementById('camera-stream').srcObject = stream;
+                })
+                .catch(function (err) {
+                    console.log("Error: " + err);
+                    alert("Unable to access camera.");
+                });
+        }
+      let stream1, stream2;
+
+      function startCamera1() {
+        var streamURL1 = "http://192.168.133.78:8080/video"; 
+        document.getElementById('camera-stream1').src = streamURL1;
+        document.getElementById('camera-container5').style.display = 'block';
+    }
+
+    function startCamera2() {
+        var streamURL2 = "http://192.168.133.78:8080/video";
+        document.getElementById('camera-stream2').src = streamURL2;
+        document.getElementById('camera-container6').style.display = 'block';
+    }
+
+    function capturePhoto1() {
+        fetch('/capture-photo', {
+            method: 'POST',
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.imageBase64) {
+                const downloadLink = document.createElement('a');
+                downloadLink.href = 'data:image/jpeg;base64,' + data.imageBase64;
+                downloadLink.download = data.filename;
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+            } else {
+                alert("Failed to capture photo!");
+            }
+        })
+        .catch(err => console.error(err));
+    }    
+
+    function capturePhoto2() {
+        fetch('/capture-photo', {
+            method: 'POST',
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.imageBase64) {
+                const downloadLink = document.createElement('a');
+                downloadLink.href = 'data:image/jpeg;base64,' + data.imageBase64;
+                downloadLink.download = data.filename;
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+            } else {
+                alert("Failed to capture photo!");
+            }
+        })
+        .catch(err => console.error(err));
+    }    
+
+        function startCameras() {
+            var numShooters = document.getElementById('numShooters').value;
+        
+            closePopups();
+            document.getElementById('camera-container-wrapper').style.display = 'flex';
+        
+            if (numShooters == 1) {
+                document.getElementById('camera-container5').style.display = 'block';
+                document.getElementById('camera-container6').style.display = 'none';
+                startCamera1();
+            } else if (numShooters == 2) {
+                document.getElementById('camera-container5').style.display = 'block';
+                document.getElementById('camera-container6').style.display = 'block';
+                startCamera1();
+                startCamera2();
+            } else {
+                alert("Please enter 1 or 2 for the number of shooters.");
+            }
+        }
+
+        function closeCamera1() {
+            const video = document.getElementById('camera-stream1');
+            
+            // Stop video tracks if the stream exists
+            if (video.srcObject) {
+                let tracks = video.srcObject.getTracks();
+                tracks.forEach(track => track.stop());
+                video.srcObject = null;  // Clear the video stream
+            }
+            
+            // Hide the camera container
+            document.getElementById('camera-container5').style.display = 'none';
+            
+            // Check if camera-container6 is visible, ensure it remains centered
+            const cameraContainer6 = document.getElementById('camera-container6');
+            if (cameraContainer6.style.display !== 'none') {
+                cameraContainer6.style.display = 'flex';  // Make sure it is still centered
+            }
+        }        
+
+        function closeCamera2() {
+            const video = document.getElementById('camera-stream2');
+            
+            // Stop video tracks if the stream exists
+            if (video.srcObject) {
+                let tracks = video.srcObject.getTracks();
+                tracks.forEach(track => track.stop());
+                video.srcObject = null;  // Clear the video stream
+            }
+            
+            // Hide the camera container
+            document.getElementById('camera-container6').style.display = 'none';
+            
+            // Check if camera-container5 is visible, ensure it remains centered
+            const cameraContainer5 = document.getElementById('camera-container5');
+            if (cameraContainer5.style.display !== 'none') {
+                cameraContainer5.style.display = 'flex';  // Make sure it is still centered
+            }
+        }        
+        
+        let photoCounter = 1;
+        
+        function capturePhoto() {
+            const video = document.getElementById('camera-stream');
+            const aspectRatio = video.videoWidth / video.videoHeight;
+        
+            const newWidth = 1920;
+            const newHeight = newWidth / aspectRatio;
+        
+            const canvas = document.createElement('canvas');
+            canvas.width = newWidth;
+            canvas.height = newHeight;
+        
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+            const imageDataUrl = canvas.toDataURL('image/jpeg');
+        
+            // Create a link element to download the image
+            const downloadLink = document.createElement('a');
+            downloadLink.href = imageDataUrl;
+            downloadLink.download = `image_${photoCounter}.jpg`;
+        
+            // Trigger the download by programmatically clicking the link
+            downloadLink.click();
+        
+            // Convert the image to a Blob and send it to the backend
+            canvas.toBlob(function (blob) {
+                const formData = new FormData();
+                formData.append('photo', blob, `image_${photoCounter}.jpg`);
+        
+                // Send the photo to the backend using fetch
+                fetch('/save-photo', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert("Image saved successfully!");
+                        } else {
+                            alert("Failed to save image.");
+                        }
+                        closeCamera();
+                    })
+                    .catch(err => console.log(err));
+            });
+            photoCounter++;
+        }
+
+        function closeCamera() {
+            document.getElementById('camera-container').style.display = 'none';
+            if (cameraStream) {
+                const tracks = cameraStream.getTracks();
+                tracks.forEach(track => track.stop());
+            }
+        }
+
+
+    </script>
+
+
+    <!-- Overlay -->
+    <div id="overlay" class="overlay"></div>
+
+    <script>
+        function showPopup1() {
+            document.getElementById('popup1').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
+        }
+        function showPopup81() {
+          document.getElementById('popup81').style.display = 'flex';
+        }
+    </script>
+
+    </div>
+
+
+
+    <!-- Overlay -->
+    <div id="overlay" class="overlay"></div>
+
+    <script>
+        function showPopup1() {
+            closePopups();
+            document.getElementById('popup1').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
+        }
+
+        function showPopup2() {
+            closePopups();
+            document.getElementById('popup1').style.display = 'none';
+            document.getElementById('popup2').style.display = 'block';
+        }
+
+        function closePopups() {
+            document.getElementById('popup1').style.display = 'none';
+            document.getElementById('popup2').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+        }
+
+        // function saveSettings() {
+        //     // Example of capturing the input values
+        //     const radius = document.getElementById('radius').value;
+        //     const score = document.getElementById('score').value;
+        //     const noOfBullet = document.getElementById('noOfBullet').value;
+        //     const id = document.getElementById('id').value;
+        //     const name = document.getElementById('name').value;
+        //     const range = document.getElementById('range').value;
+
+        //     // Close the popup and overlay
+        //     closePopups();
+
+        //     // Redirect to dashboard or refresh the page to show updated data
+        //     // alert('Settings Saved Successfully!');
+        //     showSection('settings');
+        // }
+
+        function showSection(sectionId) {
+            // Hide all sections
+            var sections = document.querySelectorAll('.content-section');
+            sections.forEach(function (section) {
+                section.classList.remove('active');
+            });
+
+            // Show the selected section
+            var activeSection = document.getElementById(sectionId);
+            if (activeSection) {
+                activeSection.classList.add('active');
+            }
+        }
+
+        function showPopup() {
+            document.getElementById('uploadPopup').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
+        }
+
+        function showPopup69() {
+            document.getElementById('videoPopup').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
+        }
+
+        function closePopup() {
+            document.getElementById('uploadPopup').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+        }
+
+        function closePopup69() {
+            document.getElementById('videoPopup').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+        }
+
+        function generateID() {
+            var sid = document.getElementById("sid_input").value;
+            document.getElementById("sid_input").value = sid;
+        }
+
+        function updateFileDisplay() {
+            var fileInput = document.getElementById("file_input");
+            var fileDisplay = document.getElementById("file_display");
+            fileDisplay.value = fileInput.files.length > 0 ? fileInput.files[0].name : "";
+        }
+
+        function updateVideoFileDisplay() {
+            const input = document.getElementById('video_input');
+            const display = document.getElementById('video_display');
+            if (input.files.length > 0) {
+                display.value = input.files[0].name;
+            }
+        }
+    </script>
+    <!-- Popup 3 for Measure Performance -->
+    <form action="{{ url_for('save_performance') }}" method="POST">
+    <div id="popup3" class="popup">
+        <div class="popup-header">
+            Measure Performance
+            <span class="close-icon" onclick="closePopups()">×</span>
+        </div>
+        <label for="sid_input">Arms ID:</label>
+        <input type="text" id="sid_input" name="sid_input" class="sid_input" required onblur="generateID()"><br></br>
+        <label for="startDate">Start Date:</label>
+        <input type="date" id="start_date" name="start_date" required><br></br>
+        <label for="endDate">End Date:</label>
+        <input type="date" id="end_date" name="end_date" required><br></br>
+        <button onclick="submit">Submit</button>
+    </div>
+    </form>
+    <!-- Overlay -->
+    <div id="overlay" class="overlay"></div>
+    <!-- Popup for File Upload -->
+    <div id="uploadPopup" class="popup">
+        <div class="popup-header">
+            File Upload
+            <span class="close-icon" onclick="closePopup()">×</span>
+        </div>
+        <form action="/upload-file" method="POST" enctype="multipart/form-data">
+            <div class="file-container">
+                <input type="text" id="file_display" class="file-display" readonly>
+                <label for="file_input" class="file-label">Browse</label>
+                <input type="file" id="file_input" name="file_input" class="file-input" onchange="updateFileDisplay()">
+            </div>
+            <input type="submit" value="Submit" class="submit-button">
+        </form>
+    </div>
+
+    <!-- Popup for Video Upload -->    
+    <div id="videoPopup" class="popup">
+        <div class="popup-header">
+            File Upload
+            <span class="close-icon" onclick="closePopup69()">×</span>
+        </div>
+        <form action="/upload-video" method="POST" enctype="multipart/form-data">
+            <div class="file-container">
+                <input type="text" id="video_display" class="file-display" readonly>
+                <label for="video_input" class="file-label">Browse</label>
+                <input type="file" id="video_input" name="video_input" class="file-input" onchange="updateVideoFileDisplay()">
+            </div>
+            <input type="submit" value="Submit" class="submit-button">
+        </form>
+    </div>
+
+    <script>
+        function showPopup3() {
+            closePopups();
+            document.getElementById('popup3').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
+        }
+        function closePopups() {
+            document.querySelectorAll('.popup').forEach(function (popup) {
+                popup.style.display = 'none';
+            });
+            document.getElementById('overlay').style.display = 'none';
+        }
+
+        function savePerformance() {
+            const id = document.getElementById('sid_input').value;
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+
+            // Close the popup and overlay
+            closePopups();
+
+            // Redirect to dashboard or refresh the page to show updated data
+            //alert('Performance Data Saved Successfully!');
+            showSection('measure-performance');
+        }
+        function showSection(sectionId) {
+            // Hide all sections
+            var sections = document.querySelectorAll('.content-section');
+            sections.forEach(function (section) {
+                section.classList.remove('active');
+            });
+
+            // Show the selected section
+            var activeSection = document.getElementById(sectionId);
+            if (activeSection) {
+                activeSection.classList.add('active');
+            }
+        }
+
+    </script>
+</body>
+
+</html>

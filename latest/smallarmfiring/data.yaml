@@ -1,0 +1,7 @@
+train: /content/drive/MyDrive/Computer Vision /Small Arms firing/shootingyolo/train/images
+val: /content/drive/MyDrive/Computer Vision /Small Arms firing/shootingyolo/test/images
+test: /content/drive/MyDrive/Computer Vision /Small Arms firing/shootingyolo/test/images
+
+nc: 2
+names: ['bullet hit', 'white box']
+

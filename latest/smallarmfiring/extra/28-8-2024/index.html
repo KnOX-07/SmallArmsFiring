@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmallArmsFiring</title>
+    <link rel="stylesheet" href="{{ url_for("static", filename="style.css") }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Upload File</h1>
+        <form action="/" method="post" enctype="multipart/form-data">
+            <div class="sid-container">
+                SID: <input type="text" id="sid_input" name="sid_input" class="sid-input" placeholder="Enter SID" required onblur="generateSID()">
+            </div>
+            <div class="file-container">
+                <input type="text" id="file_display" class="file-display" readonly>
+                <label for="file_input" class="file-label">Browse</label>
+                <input type="file" id="file_input" name="file_input" class="file-input" onchange="updateFileDisplay()">
+            </div>
+            <input type="submit" value="Submit" class="submit-button">
+        </form>
+    </div>
+
+    <script>
+        function generateSID() {
+            var sid = document.getElementById("sid_input").value;
+            document.getElementById("sid_input").value = sid;
+        }
+
+        function updateFileDisplay() {
+            var fileInput = document.getElementById("file_input");
+            var fileDisplay = document.getElementById("file_display");
+            fileDisplay.value = fileInput.files.length > 0 ? fileInput.files[0].name : "";
+        }
+    </script>
+</body>
+</html>	

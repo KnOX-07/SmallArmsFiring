@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmallArmsFiring</title>
+    <link rel="stylesheet" href="{{ url_for("static", filename="style.css") }}">
+    <link rel="stylesheet" href="{{ url_for("static", filename="display.css") }}">
+    <style>
+     
+    .spacer {
+    width: 20px;
+}
+th,td{
+    padding: 8px;
+}
+        
+        .average-score-heading {
+            color: rgba(4, 140, 4, 0.875);
+        }
+        .score-heading {
+            color: rgba(4, 140, 4, 0.875);
+        }
+         .distance-heading {
+            color: rgba(4, 140, 4, 0.875);
+        }
+         .sn-heading {
+            color: rgba(4, 140, 4, 0.875);
+        }
+        
+        
+        .total-no-of-bullets-detected, .Number_of_valid_bullet_hits, .percentage_of_valid_target_hits {
+            color: #000000;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 style="text-align: center;">Army ID: {{ army_id }}</h2>
+        <h2 style="text-align: center;">Name: {{ name }}</h2>
+        <div class="image-container">
+            <div class="image-box">
+                <img src="{{ file_path }}" alt="Uploaded Image">
+            </div>
+            <div class="predictions-box">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="sn-heading" style="font-size: 16px; font-style: Arial;">Round</th>
+                            
+                            <th class="score-heading" style="font-size: 16px; font-style: Arial;">Score</th>
+
+                            <th class="distance-heading" style="font-size: 16px; font-style: Arial;">Distance</th>
+                            
+                            <!-- <th class="average-score-heading" style="font-size: 16px; font-style: Arial;">Average Score</th>       -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                         {% for score, distance in score_distance_pairs %}
+                      
+                        <tr>
+                           
+                            <td>{{ loop.index }}</td>
+                            <td>{{ score }}</td>
+                            <!--<td class="spacer"></td> -->
+                            <td>
+                            {{ distance }} 
+                            </td>
+                            <!-- {% if loop.first %}
+                            <td rowspan="{{ score_distance_pairs|length }}" style="vertical-align: top;">{{ average_score }}
+                            {% endif %}
+                            </td> -->
+
+                        </tr>
+                        
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div>
+               
+            <span class="total-score" style="font-size: 16px; font-style: Arial;">Point score: {{ total_score }}</span><br>
+            <span class="tot_sco" style="font-size: 16px; font-style: Arial;">Total score: {{ tot_sco }}</span><br>
+            <span class="average_score" style="font-size: 16px; font-style: Arial;">Average score: {{ average_score }}</span><br>
+            <span class="accuracy" style="font-size: 16px; font-style: Arial;">Total accuracy: {{ accuracy }}%</span><br>
+            <span class="grade" style="font-size: 16px; font-style: Arial;">Grade: {{ grade }}</span><br>
+                     
+        </div>
+        <div class="button-container">
+            <form action="/">
+                <button type="submit" class="back-button">Back</button>
+            </form>
+            <button type="button" class="export-button">Export</button>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script>
+    const { jsPDF } = window.jspdf;
+
+    function exportToPDF() {
+        var army_id = "{{ army_id }}";
+        var name = "{{ name }}";
+        
+        // Initialize the PDF in portrait mode
+        var doc = new jsPDF({
+            orientation: 'portrait', // Ensure the PDF is in portrait mode
+            unit: 'mm',              // Set units to millimeters for easier page measurements
+            format: 'a4'             // Standard A4 page size
+        });
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(12);
+        // Add text to the PDF
+        doc.text(20, 20, `Shooting Result for ${army_id}`);
+        doc.setFont("helvetica", "normal");
+        doc.text(20, 30, `Name: ${name}`);
+        doc.text(20, 40, `Date: ${new Date().toLocaleDateString()} Time: ${new Date().toLocaleTimeString()}`);
+
+        // Calculate dimensions to fit the image in portrait mode within the margins
+        var pageWidth = doc.internal.pageSize.getWidth();
+        var imgWidth = pageWidth - 30;  // 30mm total margin (15mm on each side)
+        var imgHeight = imgWidth * (160 / 180);  // Maintain aspect ratio of your original image
+
+        // Add the image in portrait mode
+        doc.addImage('{{ file_path }}', 'JPG', 15, 47, imgWidth, imgHeight);
+        const scoreDistancePairs = JSON.parse('{{ score_distance_pairs | tojson }}');
+        const scores = scoreDistancePairs.map(pair => pair[0]);
+        const distances = scoreDistancePairs.map(pair => pair[1]);
+
+        // Add additional text to the PDF
+        //console.log("Distances: ", distances);
+        
+        doc.text(20, 220, `Scores: ${JSON.stringify({{ scores }})}`);
+        doc.text(20, 230, `Average Score: {{ average_score }}`);
+        
+        const distancesText = distances.join(", ");
+        const wrappedDistances = doc.splitTextToSize(distancesText, pageWidth - 30);
+        doc.text(20, 240, `Distances:`);
+        doc.text(20, 245, wrappedDistances);
+
+        doc.text(20, 260, `Total Sum of Scores: {{ total_score }}`);
+        doc.text(20, 270, `Total score: {{ tot_sco }}`);
+        doc.text(20, 280, `Total accuracy: {{ accuracy }}%`);
+        doc.text(20, 290, `Grade: {{ grade }}`);
+        
+        // Alert the user and save the PDF
+        //alert('Exporting PDF now!');
+        doc.save(`${army_id}.pdf`);
+    }
+
+    document.querySelector('.export-button').addEventListener('click', exportToPDF);
+    </script>
+</body>
+</html>

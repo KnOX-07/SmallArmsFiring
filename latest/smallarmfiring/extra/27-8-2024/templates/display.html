@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmallArmsFiring</title>
+    <link rel="stylesheet" href="{{ url_for("static", filename="style.css") }}">
+    <link rel="stylesheet" href="{{ url_for("static", filename="display.css") }}">
+    <style>
+     
+    .spacer {
+    width: 20px;
+}
+        
+        .average-score-heading {
+            color: rgba(4, 140, 4, 0.875);
+        }
+        .score-heading {
+            color: rgba(4, 140, 4, 0.875);
+        }
+         .distance-heading {
+            color: rgba(4, 140, 4, 0.875);
+        }
+         .sn-heading {
+            color: rgba(4, 140, 4, 0.875);
+        }
+        
+        
+        .total-no-of-bullets-detected, .Number_of_valid_bullet_hits, .percentage_of_valid_target_hits {
+            color: #000000;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Shooting Result for {{ sid }}</h1>
+        <div class="image-container">
+            <div class="image-box">
+                <img src="{{ file_path }}" alt="Uploaded Image">
+            </div>
+            <div class="predictions-box">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="sn-heading" style="font-size: 16px; font-style: Arial;">Round</th>
+                            
+                            <th class="score-heading" style="font-size: 16px; font-style: Arial;">Score</th>
+                            
+                            <th class="average-score-heading" style="font-size: 16px; font-style: Arial;">Average Score</th>
+                            
+                             <th class="distance-heading" style="font-size: 16px; font-style: Arial;">Distance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                         {% for score, distance in score_distance_pairs %}
+                      
+                        <tr>
+                           
+                            <td>{{ loop.index }}</td>
+                            <td>{{ score }}</td>
+                            <td class="spacer"></td>
+                            {% if loop.first %}
+                            <td rowspan="{{ score_distance_pairs|length }}" style="vertical-align: top;">{{ average_score }}</td>
+                            {% endif %}
+                            <td>{{ distance }}</td>
+                        </tr>
+                        
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div>
+            <span class="total-no-of-bullets-detected" style="font-size: 16px; font-style: Arial;">Total no. of bullets detected: {{ total_no_of_bullets_detected }}</span><br>
+            <span class="Number_of_valid_bullet_hits" style="font-size: 16px; font-style: Arial;">Number of valid bullet hits: {{ Number_of_valid_bullet_hits }}</span><br>
+            <span class="percentage_of_valid_target_hits" style="font-size: 16px; font-style: Arial;">Percentage of valid target hits: {{ percentage_of_valid_target_hits }}%</span>
+        </div>
+        <div class="button-container">
+            <form action="/">
+                <button type="submit" class="back-button">Back</button>
+            </form>
+            <button type="button" class="export-button">Export</button>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script>
+    const { jsPDF } = window.jspdf;
+
+    function exportToPDF() {
+        var sid = "{{ sid }}";
+        
+        // Initialize the PDF in portrait mode
+        var doc = new jsPDF({
+            orientation: 'portrait', // Ensure the PDF is in portrait mode
+            unit: 'mm',              // Set units to millimeters for easier page measurements
+            format: 'a4'             // Standard A4 page size
+        });
+
+        // Add text to the PDF
+        doc.text(20, 20, `Shooting Result for ${sid}`);
+        doc.text(20, 30, `Date: ${new Date().toLocaleDateString()} Time: ${new Date().toLocaleTimeString()}`);
+
+        // Calculate dimensions to fit the image in portrait mode within the margins
+        var pageWidth = doc.internal.pageSize.getWidth();
+        var imgWidth = pageWidth - 30;  // 30mm total margin (15mm on each side)
+        var imgHeight = imgWidth * (160 / 180);  // Maintain aspect ratio of your original image
+
+        // Add the image in portrait mode
+        doc.addImage('{{ file_path }}', 'JPG', 15, 40, imgWidth, imgHeight);
+         const scoreDistancePairs = JSON.parse('{{ score_distance_pairs | tojson }}');
+         const scores = scoreDistancePairs.map(pair => pair[0]);
+         const distances = scoreDistancePairs.map(pair => pair[1]);
+
+        // Add additional text to the PDF
+       
+        doc.text(20, 210, `Scores: ${JSON.stringify({{ scores }})}`);
+        doc.text(20, 220, `Average Score: {{ average_score }}`);
+        doc.text(20, 230, `Total no. of bullets detected: {{ total_no_of_bullets_detected }}`);
+        doc.text(20, 240, `Number of valid bullet hits: {{ Number_of_valid_bullet_hits }}`);
+        doc.text(20, 250, `Percentage of valid target hits: {{ percentage_of_valid_target_hits }}%`);
+        doc.text(20, 230, `Distances: ${JSON.stringify({{ distances }})}`); 
+        // Alert the user and save the PDF
+        //alert('Exporting PDF now!');
+        doc.save(`${sid}.pdf`);
+    }
+
+    document.querySelector('.export-button').addEventListener('click', exportToPDF);
+    </script>
+</body>
+</html>
