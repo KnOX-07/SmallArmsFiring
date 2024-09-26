@@ -37,7 +37,7 @@ This is an AI-based application designed for shooting analysis using object dete
    - Create a database named `sa_firing`.
    - Update the `DATABASE_CONFIG` in the `app.py` file with your MySQL credentials.
 4. **Run the application**:
-   - Navigate to the directory `extra`
+   - Navigate to the directory `extra`.
    - Open terminal and type:
 
 
