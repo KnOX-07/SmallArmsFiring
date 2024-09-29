@@ -42,7 +42,7 @@ This is an AI-based application designed for shooting analysis using object dete
 
 
       ```bash
-      python app.py
+      python3 app.py
       ```
       By default, the application will run on `http://127.0.0.1:5000/`.
 
